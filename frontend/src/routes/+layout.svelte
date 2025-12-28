@@ -152,7 +152,7 @@
 	};
 </script>
 
-<ModeWatcher />
+<ModeWatcher track={true} />
 <Toaster closeButton duration={8000} richColors />
 <Sidebar.Provider>
 	<AppSideBar />
