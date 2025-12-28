@@ -6,6 +6,7 @@
 	import { shouldShowPuzzleHuntBorder } from '$lib/components/marketDataUtils';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import { useSidebar } from '$lib/components/ui/sidebar/index.js';
 	import { useStarredMarkets } from '$lib/starPinnedMarkets.svelte';
 	import { cn, formatMarketName } from '$lib/utils';
@@ -41,15 +42,14 @@
 		}
 	});
 
-	function cycleTheme() {
-		const next = themePreference === 'light' ? 'dark' : themePreference === 'dark' ? 'auto' : 'light';
-		themePreference = next;
-		if (next === 'auto') {
+	// Update mode when theme preference changes
+	$effect(() => {
+		if (themePreference === 'auto') {
 			setMode('');
 		} else {
-			setMode(next);
+			setMode(themePreference);
 		}
-	}
+	});
 
 	// Clean up non-existent starred markets when the markets list changes
 	$effect(() => {
@@ -342,19 +342,29 @@
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton onclick={cycleTheme}>
-							{#snippet tooltipContent()}Theme{/snippet}
-							{#if themePreference === 'dark'}
-								<Moon />
-								<span class="ml-3">Theme: Dark</span>
-							{:else if themePreference === 'light'}
-								<Sun />
-								<span class="ml-3">Theme: Light</span>
-							{:else}
-								<Monitor />
-								<span class="ml-3">Theme: Auto</span>
-							{/if}
-						</Sidebar.MenuButton>
+						<div class="px-2 py-2">
+							<div class="text-xs text-muted-foreground mb-2 group-data-[collapsible=icon]:hidden">
+								Theme
+							</div>
+							<ToggleGroup.Root
+								type="single"
+								bind:value={themePreference}
+								class="grid grid-cols-3 gap-1"
+							>
+								<ToggleGroup.Item value="light" class="flex-col gap-1 h-auto py-2">
+									<Sun class="h-4 w-4" />
+									<span class="text-xs group-data-[collapsible=icon]:hidden">Light</span>
+								</ToggleGroup.Item>
+								<ToggleGroup.Item value="auto" class="flex-col gap-1 h-auto py-2">
+									<Monitor class="h-4 w-4" />
+									<span class="text-xs group-data-[collapsible=icon]:hidden">Auto</span>
+								</ToggleGroup.Item>
+								<ToggleGroup.Item value="dark" class="flex-col gap-1 h-auto py-2">
+									<Moon class="h-4 w-4" />
+									<span class="text-xs group-data-[collapsible=icon]:hidden">Dark</span>
+								</ToggleGroup.Item>
+							</ToggleGroup.Root>
+						</div>
 					</Sidebar.MenuItem>
 				</Sidebar.Menu>
 			</Sidebar.GroupContent>
