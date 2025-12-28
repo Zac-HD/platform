@@ -22,10 +22,34 @@
 	import PanelLeft from '@lucide/svelte/icons/panel-left';
 	import Moon from '@lucide/svelte/icons/moon';
 	import Sun from '@lucide/svelte/icons/sun';
+	import Monitor from '@lucide/svelte/icons/monitor';
 	import CreateMarket from './forms/createMarket.svelte';
-	import { toggleMode, mode } from 'mode-watcher';
+	import { setMode, mode } from 'mode-watcher';
 	let sidebarState = useSidebar();
 	const { allStarredMarkets, cleanupStarredMarkets } = useStarredMarkets();
+
+	// Theme preference: 'light' | 'dark' | 'auto'
+	let themePreference = $state<'light' | 'dark' | 'auto'>('auto');
+
+	// Initialize theme preference from localStorage
+	$effect(() => {
+		const stored = localStorage.getItem('mode-watcher-mode');
+		if (stored === 'light' || stored === 'dark') {
+			themePreference = stored;
+		} else {
+			themePreference = 'auto';
+		}
+	});
+
+	function cycleTheme() {
+		const next = themePreference === 'light' ? 'dark' : themePreference === 'dark' ? 'auto' : 'light';
+		themePreference = next;
+		if (next === 'auto') {
+			setMode('');
+		} else {
+			setMode(next);
+		}
+	}
 
 	// Clean up non-existent starred markets when the markets list changes
 	$effect(() => {
@@ -318,14 +342,17 @@
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
 					<Sidebar.MenuItem>
-						<Sidebar.MenuButton onclick={toggleMode}>
+						<Sidebar.MenuButton onclick={cycleTheme}>
 							{#snippet tooltipContent()}Theme{/snippet}
-							{#if $mode === 'dark'}
+							{#if themePreference === 'dark'}
 								<Moon />
 								<span class="ml-3">Theme: Dark</span>
-							{:else}
+							{:else if themePreference === 'light'}
 								<Sun />
 								<span class="ml-3">Theme: Light</span>
+							{:else}
+								<Monitor />
+								<span class="ml-3">Theme: Auto</span>
 							{/if}
 						</Sidebar.MenuButton>
 					</Sidebar.MenuItem>
