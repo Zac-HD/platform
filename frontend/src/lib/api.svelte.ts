@@ -49,6 +49,7 @@ export const serverState = $state({
 	actingAs: undefined as number | undefined,
 	isAdmin: false,
 	confirmAdmin: false,
+	isTestnet: false,
 	portfolio: undefined as websocket_api.IPortfolio | undefined,
 	portfolios: new SvelteMap<number, websocket_api.IPortfolio>(),
 	transfers: [] as websocket_api.ITransfer[],
@@ -184,6 +185,7 @@ socket.onmessage = (event: MessageEvent) => {
 
 	if (msg.authenticated) {
 		serverState.userId = msg.authenticated.accountId;
+		serverState.isTestnet = msg.authenticated.isTestnet ?? false;
 	}
 
 	if (msg.actingAs) {

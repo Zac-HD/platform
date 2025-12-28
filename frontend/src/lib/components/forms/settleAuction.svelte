@@ -7,7 +7,7 @@
 	import * as Command from '$lib/components/ui/command';
 	import * as Popover from '$lib/components/ui/popover';
 	import { roundToTenth } from '$lib/components/marketDataUtils';
-	import { cn } from '$lib/utils';
+	import { cn, getCurrencyName } from '$lib/utils';
 	import Check from '@lucide/svelte/icons/check';
 	import ChevronsUpDown from '@lucide/svelte/icons/chevrons-up-down';
 	import { websocket_api } from 'schema-js';
@@ -185,7 +185,7 @@ Settle auction:
 			<AlertDialog.Title>Are you sure?</AlertDialog.Title>
 			<AlertDialog.Description>
 				{name} will be sold to {accountName($formData.buyerId, 'Yourself')} for {$formData.settlePrice}
-				clips.
+				{getCurrencyName()}.
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>

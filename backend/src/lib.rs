@@ -1,4 +1,4 @@
-use std::{path::PathBuf, sync::Arc};
+use std::{env, path::PathBuf, sync::Arc};
 
 use db::DB;
 use governor::{DefaultKeyedRateLimiter, Quota, RateLimiter};
@@ -19,6 +19,7 @@ pub struct AppState {
     pub mutate_ratelimit: Arc<DefaultKeyedRateLimiter<i64>>,
     pub admin_mutate_ratelimit: Arc<DefaultKeyedRateLimiter<i64>>,
     pub uploads_dir: PathBuf,
+    pub is_testnet: bool,
 }
 
 const ADMIN_RATE_LIMIT_MULTIPLIER: u32 = 10;
@@ -38,6 +39,17 @@ impl AppState {
         let mutate_ratelimit = Arc::new(RateLimiter::keyed(MUTATE_QUOTA));
         let admin_mutate_ratelimit = Arc::new(RateLimiter::keyed(ADMIN_MUTATE_QUOTA));
         let uploads_dir = PathBuf::from("/data/uploads"); // Default value, overridden in main.rs
+
+        // Detect if this is a testnet environment by checking DATABASE_URL
+        let is_testnet = env::var("DATABASE_URL")
+            .unwrap_or_default()
+            .to_lowercase()
+            .contains("testing")
+            || env::var("DATABASE_URL")
+                .unwrap_or_default()
+                .to_lowercase()
+                .contains("staging");
+
         Ok(Self {
             db,
             subscriptions,
@@ -46,6 +58,7 @@ impl AppState {
             mutate_ratelimit,
             admin_mutate_ratelimit,
             uploads_dir,
+            is_testnet,
         })
     }
 }

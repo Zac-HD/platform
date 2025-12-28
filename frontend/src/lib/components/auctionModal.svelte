@@ -4,6 +4,7 @@
 	import BuyAuction from '$lib/components/forms/buyAuction.svelte';
 	import DeleteAuction from '$lib/components/forms/deleteAuction.svelte';
 	import SettleAuction from '$lib/components/forms/settleAuction.svelte';
+	import { getCurrencyName } from '$lib/utils';
 	import { websocket_api } from 'schema-js';
 	import X from '@lucide/svelte/icons/x';
 	import { PUBLIC_SERVER_URL } from '$env/static/public';
@@ -66,7 +67,7 @@
 
 		{#if isSettled}
 			<p class="mb-2 text-lg font-semibold text-blue-600">
-				Sold for: {auction?.closed?.settlePrice} clips
+				Sold for: {auction?.closed?.settlePrice} {getCurrencyName()}
 			</p>
 			{#if buyerId}
 				<p class="mb-2 text-sm text-muted-foreground">
@@ -74,7 +75,7 @@
 				</p>
 			{/if}
 		{:else if auction.binPrice !== null && auction.binPrice !== undefined}
-			<p class="mb-2 text-lg font-semibold text-green-600">Buy It Now: {auction.binPrice} clips</p>
+			<p class="mb-2 text-lg font-semibold text-green-600">Buy It Now: {auction.binPrice} {getCurrencyName()}</p>
 		{/if}
 
 		<img

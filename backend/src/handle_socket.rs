@@ -1037,7 +1037,10 @@ async fn authenticate(
                 }
                 let resp = encode_server_message(
                     request_id,
-                    SM::Authenticated(Authenticated { account_id: id }),
+                    SM::Authenticated(Authenticated {
+                        account_id: id,
+                        is_testnet: app_state.is_testnet,
+                    }),
                 );
                 socket.send(resp).await?;
                 return Ok(AuthenticatedClient {

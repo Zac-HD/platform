@@ -1,8 +1,26 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { serverState } from './api.svelte';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
+}
+
+/**
+ * Checks if the current environment is testnet/dev (not production)
+ * This value is provided by the backend based on which database it's using.
+ */
+export function isTestnet(): boolean {
+	return serverState.isTestnet;
+}
+
+/**
+ * Returns the currency name based on environment
+ * - Testnet/Dev: "pins" (safety-pins)
+ * - Production: "clips"
+ */
+export function getCurrencyName(): string {
+	return isTestnet() ? 'pins' : 'clips';
 }
 
 export function parseAltName(name: string | undefined): { name: string; isAlt: boolean } {

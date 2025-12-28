@@ -2,6 +2,7 @@
 	import { sendClientMessage } from '$lib/api.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Button } from '$lib/components/ui/button';
+	import { getCurrencyName } from '$lib/utils';
 	import { websocket_api } from 'schema-js';
 	import { protoSuperForm } from './protoSuperForm';
 
@@ -72,7 +73,7 @@
 
 <form use:enhance bind:this={formEl} class="flex flex-col gap-2">
 	<Button variant="default" type="submit" class="w-full" disabled={isSubmitting}>
-		{isSubmitting ? 'Buying...' : `Buy Now for ${binPrice} clips`}
+		{isSubmitting ? 'Buying...' : `Buy Now for ${binPrice} ${getCurrencyName()}`}
 	</Button>
 </form>
 
@@ -81,7 +82,7 @@
 		<AlertDialog.Header>
 			<AlertDialog.Title>Buy Item</AlertDialog.Title>
 			<AlertDialog.Description>
-				Are you sure you want to buy "{auctionName}" for {binPrice} clips?
+				Are you sure you want to buy "{auctionName}" for {binPrice} {getCurrencyName()}?
 			</AlertDialog.Description>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
